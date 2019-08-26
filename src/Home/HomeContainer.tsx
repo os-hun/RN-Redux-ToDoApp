@@ -7,45 +7,46 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native';
+import { connect } from "react-redux";
+import { addNote, deleteNote } from "./action";
 
-import Note from './note';
+import Note from './components/note';
 
 interface Props {
-
+  onAddNote: any,
+  noteArray: [ { date: string, note: string } ],
 }
 interface State {
+  noteText: string,
+  date: string
   noteArray: [ { date: string, note: string } ],
-  noteText: string
 }
 
-export default class Main extends Component<Props, State>{
+class Home extends Component<Props, State>{
   constructor(props: Props) {
     super(props);
+    var d = new Date()
+    var fullDate = d.getFullYear() +  "/" + (d.getMonth() + 1) + "/" + d.getDate()
     this.state = {
-      noteArray: [ { date: '', note: '' } ],
+      noteArray: [ { date: '', note: '' }],
       noteText: '',
+      date: fullDate,
     }
   }
   addNote() {
     if(this.state.noteText){
-      var d = new Date();
-      this.state.noteArray.push({
-        date: d.getFullYear()+
-          "/"+(d.getMonth()+1) +
-          "/"+ d.getDate(),
-        note: this.state.noteText
-      });
-      this.setState({ noteArray: this.state.noteArray });
-      this.setState({noteText:''});
+      this.props.onAddNote(this.state.noteText, this.state.date)
+      this.setState({ noteText: '' })
     }
   }
   deleteNote(key: number) {
-    this.state.noteArray.splice(key, 1)
+    this.props.noteArray.splice(key, 1)
     this.setState({noteArray: this.state.noteArray})
   }
   render() {
-    let notes = this.state.noteArray.map((val, key) => {
-      return <Note key={key} keyval={key} val={val} deleteMethod={() => this.deleteNote(key)} />
+    let notes = this.props.noteArray.map((val, key) => {
+      // @ts-ignore
+      return <Note key={key} keyval={key} deleteMethod={() => this.deleteNote(key)}  val={val}/>
     })
     return (
       <View style={styles.container}>
@@ -73,6 +74,23 @@ export default class Main extends Component<Props, State>{
   }
 }
 
+const mapStateToProps = (state: any) => {
+  // stateとはstoreのこと。巨大なjsonで全てのstateを管理する
+  console.log(state)
+  return {
+    noteArray: state.Home.noteArray
+  }
+}
+
+const mapDispatchToProps = (dispatch: any) => {
+  console.log(dispatch)
+  return {
+    onAddNote: (text: string, date: string)  => dispatch(addNote(text, date))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -82,7 +100,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent:'center',
     borderBottomWidth: 10,
-    borderBottomColor: '#ddd'
+    borderBottomColor: '#ddd',
   },
   headerText: {
     color: 'white',
@@ -106,7 +124,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#252525',
     borderTopWidth:2,
-    borderTopColor: '#ededed'
+    borderTopColor: '#ededed',
+    height: 90,
   },
   addButton: {
     position: 'absolute',

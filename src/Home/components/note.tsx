@@ -9,11 +9,11 @@ interface Props {
 export default class Note extends Component<Props>{
   render() {
     const { keyval, deleteMethod } = this.props
-    const { date, note } = this.props.val
+    const { date, noteText } = this.props.val
     return (
       <View key={keyval} style={styles.note}>
         <Text style={styles.noteText}>{date}</Text>
-        <Text style={styles.noteText}>{note}</Text>
+        <Text style={styles.noteText}>{noteText}</Text>
         <TouchableOpacity onPress={deleteMethod} style={styles.noteDelete}>
           <Text style={styles.noteDeleteText}>D</Text>
         </TouchableOpacity>
@@ -24,7 +24,7 @@ export default class Note extends Component<Props>{
 
 class Val {
   date: string = ''
-  note: string = ''
+  noteText: string = ''
 }
 
 const styles = StyleSheet.create({

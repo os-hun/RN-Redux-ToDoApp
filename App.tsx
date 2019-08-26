@@ -8,12 +8,16 @@
  * @format
  */
 import React, {Component} from 'react'
-import Main from './src/components/main'
+import Home from './src/Home/HomeContainer'
+import { Provider } from "react-redux"
+import { store } from "./src/store"
 
 export default class App extends Component{
   render() {
     return (
-      <Main />
+      <Provider store={store}>
+        <Home />
+      </Provider>
     )
   }
 }
