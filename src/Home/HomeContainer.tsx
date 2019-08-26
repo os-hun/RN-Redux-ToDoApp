@@ -28,8 +28,8 @@ class Home extends Component<Props, State>{
     var d = new Date()
     var fullDate = d.getFullYear() +  "/" + (d.getMonth() + 1) + "/" + d.getDate()
     this.state = {
-      noteArray: [ { date: '', note: '' }],
-      noteText: '',
+      noteArray: [ { date: fullDate, note: '' }],
+      noteText: 'Welcome to ToDoApp',
       date: fullDate,
     }
   }
